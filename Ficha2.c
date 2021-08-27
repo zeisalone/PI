@@ -47,3 +47,81 @@ int mdc1 (int a, int b){
     }
     
 }
+int mdc2(int a, int b){
+    int r;
+    while(a!=0 && b!=0){
+        if (a > b) a -= b;
+        else if (a< b) b -= a;
+        else return a;
+    }
+    if(a==0) r = b;
+    else r = a;
+    return r;
+}
+
+int mdc3 (int a, int b, int *count){
+      int r; (*count) = 0;
+    while(a!=0 && b!=0){
+        if (a > b) {
+            a -= b; (*count)++; 
+            
+        }
+        else if (a < b) { 
+             b -= a; 
+            (*count)++;  
+        } 
+        else {
+            (*count)++;
+            return a ;
+            
+        }
+    }
+    if(a==0) r = b;
+    else r = a;
+    return r;
+}
+int mdc4 (int a, int b, int *count){
+       while (!(a == 0 || b == 0)) {
+        if (a > b) {
+             a = a % b;    
+             (*count)++;
+        }
+        else {
+            b = b % a; 
+            (*count)++;
+        }
+            
+    }
+
+    if (a == 0)
+        return b;
+    else
+        return a;
+}
+int fib (int n) {
+    
+    if (n == 1 || n == 2)
+        return 1;
+
+    else
+        return fib(n - 1) + fib(n - 2);
+
+}
+
+int fastfib (int n){
+int v1, v2, r; int i;
+v1 = 1;
+v2 = 1;
+
+    if (n == 1 || n == 2)
+        return 1;
+
+    for(; i < n - 2; i++) {
+        r = v1 + v2;
+        v1 = v2;
+        v2 = r;
+    }
+
+    return r;
+
+}
