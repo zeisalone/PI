@@ -110,3 +110,72 @@ char *mystrcat(char s1[], char s2[]) {
     
     return s1;
 }
+
+// 8
+
+char* mystrcpy(char* dest, char source[]) {
+    char* result = dest;
+    while((*dest = *source)) { 
+        source++; 
+        dest++; 
+        
+    }
+    return result;
+}
+
+// 9
+
+int mystrcmp(char s1[], char s2[]) {
+    int i;
+	for (i = 0; s1[i] || s2[i]; i++) {
+
+		if (s1[i] > s2[i]) return 1;
+		else if (s1[i] < s2[i]) return -1; 
+
+	}
+    return 0;
+}
+
+// 10 
+
+char *mystrstr (char s1[], char s2[]) {
+ char *ps1 = s1;
+ char *ps2 = s2;
+    
+    if (*s1 == '\0' && *s2 == '\0' || *s1 != '\0' && *s2 == '\0') return s1;
+    while (*s1) 
+    {
+        if (*s1 == *s2) {
+            ps1 = s1;
+            s1++;
+            s2++;
+        
+        while (*s1 == *s2 && *s1 != '\0') {
+            s1++;
+            s2++;
+                
+        }
+        if (*s2 == '\0') {
+        s1 = ps1;
+        return s1;
+       }
+        else s2 = ps2;
+    }
+    s1++;
+    }
+    return NULL;
+}
+
+// 11
+
+void strrev (char s[]) {
+    int i, j;
+    char temp;
+    for (i = 0; s[i]; i++);
+    for (i -= 1, j = 0; j <= i / 2; j++) {
+        temp = s[i - j];
+        s[i - j] = s[j];
+        s[j] = temp;
+    }
+    return;
+}
