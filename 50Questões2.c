@@ -46,3 +46,39 @@ LInt reverseL (LInt l) {
 }
 
 
+void insertOrd(LInt *l, int x) {
+  while (*l && (*l)->valor < x)
+    l = &((*l)->prox);
+  LInt new = malloc(sizeof(struct lligada));
+  new->valor = x;
+  new->prox = *l;
+  *l = new;
+}
+
+
+int removeOneOrd (LInt *l, int x) {
+  while(*l && (*l)->valor < x) 
+    l = &((*l)->prox);
+    if(!*l || (*l)->valor != x)
+      return 1;
+  else {
+    *l = (*l)->prox;
+    return 0;
+  }
+}
+
+
+void merge(LInt *r, LInt a,LInt b) {
+  while(a!=NULL || b != NULL){
+    if( (a != NULL && b != NULL && a->valor < b->valor) || b == NULL){
+			*r = a;
+			a = a->prox;
+		} else {
+			*r = b;
+			b = b->prox;
+		}
+		r = &( (*r)->prox);
+	}
+	*r = NULL;
+}
+
