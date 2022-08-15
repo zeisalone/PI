@@ -338,3 +338,354 @@ LInt parte (LInt l){
    }
     return n;
 }
+
+int altura (ABin a){
+    int r = 0;
+    if(a!=NULL) {
+        if(altura(a->esq) > altura(a->dir)) r = (1 + (altura (a->esq)));
+        else r = (1 + (altura (a->dir)));
+    }
+    
+	return r;
+}
+
+ABin cloneAB (ABin a) {
+    ABin clone = NULL;
+        if(a) {
+            clone = malloc(sizeof(struct nodo));
+            if(clone) {
+                clone->valor = a->valor;
+                clone->esq = cloneAB(a->esq);
+                clone->dir = cloneAB(a->dir);
+            }
+        }
+    return clone;
+}
+
+void mirror (ABin *a) {
+    ABin temp;
+    if(*a) {
+        temp = (*a)->dir;
+        (*a)->dir = (*a)->esq;
+        (*a)->esq = temp;
+        mirror(&((*a)->dir));
+        mirror(&((*a)->esq));
+    }
+}
+
+void inorder (ABin a, LInt * l) {
+    if(a) {
+        inorder(a->esq,l);
+        while(*l)  l = &((*l)->prox);
+        *l = malloc(sizeof(struct nodo));
+        (*l)->valor = a->valor;
+        inorder(a->dir,(&((*l))->prox));
+    }
+	else
+        *l = NULL;
+}
+
+void preorder (ABin a, LInt * l) {
+    if(a) {
+        *l = malloc(sizeof(struct nodo));
+        (*l)->valor = a->valor;
+        preorder(a->esq,&((*l)->prox));
+        while(*l) 
+            l = &((*l)->prox);
+            preorder(a->dir,l);
+            
+    }else *l = NULL;
+}
+
+void posorder (ABin a, LInt *l){
+    if(a){
+        posorder(a->esq, l);
+        while(*l!=NULL)
+            l = &((*l)->prox);
+        posorder(a->dir, l);
+        while(*l!=NULL)
+            l = &((*l)->prox);
+        *l = calloc(1, sizeof(struct nodo));
+        (*l)->valor = a->valor;
+    }else
+        *l = NULL;
+}
+
+int depth (ABin a, int x){
+    int r = -1;
+    if(a!=NULL){
+        if(a->valor == x)
+            r = 1;
+        else{
+            int rEsq = depth(a->esq, x);
+            int rDir = depth(a->dir, x);
+            if(rEsq==-1 && rDir==-1)
+                r = -1;
+            else if(rEsq==-1)
+                r = 1 + rDir;
+            else if(rDir==-1)
+                r = 1 + rEsq;
+            else
+                r = (rEsq < rDir) ? 1 + rEsq : 1 + rDir;
+        }
+    }
+
+    return r;
+}
+
+int freeAB (ABin a) {
+    int r = 0;
+    if(a) {
+        r+= freeAB(a->esq);
+        r+= freeAB(a->dir);
+        free(a);
+        r++;
+    }
+    return r;
+}
+
+int pruneAB (ABin *a, int l) {
+     int r = 0;
+     if(*a) {
+         r+=pruneAB(&((*a)->esq),l-1);
+         r+=pruneAB(&((*a)->dir),l-1);
+         if(l<=0) 
+         {
+             free(*a);
+             *a=0;
+             r++;
+         }
+     }
+     return r;
+ }
+
+int iguaisAB (ABin a, ABin b) {
+    int r = 0;
+    if(a && b) 
+    {
+        r = ((a->valor==b->valor) && iguaisAB(a->esq,b->esq) && iguaisAB(a->dir,b->dir));
+    }
+    if(!a && !b) r = 1;
+    return r;
+}
+
+LInt nivelL (ABin a, int n){
+    LInt new = NULL, esq, dir;
+    if(a!=NULL && n>=1){
+        if(n==1){
+            new = malloc(sizeof(struct lligada));
+            new->valor = a->valor;
+            new->prox = NULL;
+        }else{
+            esq = nivelL(a->esq, n-1);
+            dir = nivelL(a->dir, n-1);
+            if(esq!=NULL){
+                new = esq;
+                while(esq->prox!=NULL)
+                    esq = esq->prox;
+                esq->prox = dir;
+            }else
+                new = dir;
+        }
+    }
+
+    return new; 
+}
+
+int nivelV (ABin a, int n, int v[]) {
+    int r = 0; int e,d;
+    if(a && n>=1) 
+    {
+        if(n==1) 
+        {
+            *v = a->valor;
+            r++;
+        }else{
+            e = nivelV(a->esq, n-1, v);
+            d = nivelV(a->dir, n-1, v+e);
+            r+=e +d;
+        }
+    }
+    return r;
+}
+
+int dumpAbin (ABin a, int v[], int N) {
+    int r = 0;
+    int esq, dir;
+    if(a && N>0){
+         esq = dumpAbin(a->esq, v, N);
+         if(esq < N) {
+             v[esq] = a->valor;
+             dir = dumpAbin(a->dir,v+esq+1,N-1-esq);
+             r += 1 + esq +dir;
+         }else r = esq;
+    }
+       
+        
+    return r;
+}
+
+ABin somasAcA (ABin a) {
+   ABin acc = NULL;
+        if(a) {
+            ABin e = somasAcA(a->esq);
+            ABin d = somasAcA(a->dir);
+            acc = malloc(sizeof(struct nodo));
+            acc->esq = e;
+            acc->dir = d;
+            if(a->esq && a->dir)
+            {
+                acc->valor = a->valor + e->valor + d->valor;
+            }
+            else if(a->esq) 
+            {
+                acc->valor = a->valor + e->valor;
+            }
+            else if(a->dir)
+            {
+                acc->valor = a->valor + d->valor;
+            }
+            else
+            {
+                acc->valor = a->valor;
+            }
+            
+        }
+    return acc;
+}
+
+int contaFolhas (ABin a) {
+    int c = 0; 
+    if(a)
+        if(a->esq==NULL && a-> dir==NULL) {
+            c++;
+        }
+        else{
+            c = contaFolhas(a->esq) + contaFolhas(a->dir);
+        } 
+    return c;
+}
+
+ABin cloneMirror (ABin a) {
+    ABin clone = NULL;
+    if(a) {
+        clone = malloc(sizeof(struct nodo));
+        clone->valor = a->valor;
+        clone->esq = cloneMirror(a->dir);
+        clone->dir = cloneMirror(a->esq);
+    }
+    return clone;
+}
+
+int addOrd (ABin *a, int x) {
+  int  r = 1;
+    while(*a && (*a)->valor!=x)
+    {
+        if((*a)->valor > x) a = &((*a)->esq);
+        else a = &((*a)->dir);
+    }
+    if(*a == NULL){
+        r = 0;
+        *a = malloc(sizeof(struct nodo));
+        (*a)->valor = x;
+        (*a)->dir = (*a)->esq = NULL;
+    }
+    return r;
+}
+
+int lookupAB (ABin a, int x) {
+    int r = 0;
+    while(a && a->valor != x) 
+    {
+        if(a->valor > x) a = a->esq;
+        else a = a->dir;
+    }
+    if(a!=NULL)
+    r = 1;
+    return r;
+}
+
+int depthOrd (ABin a, int x) {
+    int nivel = 1;
+    while(a && a->valor != x) 
+    {
+        if(a->valor > x) 
+        {
+            a = a->esq; nivel++;
+        }
+        else
+        {
+            a = a->dir; nivel++;
+        } 
+    }
+    if(a == NULL){
+        nivel = -1;
+    }
+    return nivel;
+}
+
+int maiorAB (ABin arv){
+    while(arv->dir!=NULL)
+        arv = arv->dir;
+
+    return arv->valor;
+
+}
+
+void removeMaiorA (ABin *a) {
+    if(*a != NULL) {
+        while((*a)->dir != NULL)
+        a = &((*a)->dir);
+        ABin temp = *a;
+        *a = (*a)->esq;
+        free(temp);
+    }
+}
+
+int quantosMaiores (ABin a, int x) {
+    int r = 0;
+        if(a) 
+        {
+            if(a->valor <= x) r += quantosMaiores(a->dir,x);
+            else 
+            {
+                r += 1 + quantosMaiores(a->dir,x) + quantosMaiores(a->esq,x);
+            }
+        }
+    return r;
+}
+
+/* void aux(ABin p,ABin *a) 
+{
+    while(*a) 
+    {
+        if((*a)->valor > p->valor) 
+        a = &((*a)->esq);
+        else if((*a)->valor < p->valor) 
+        a = &((*a)->dir);
+    }
+    *a=p;
+}
+*/
+
+void listToBTree (LInt l, ABin *a) {
+    ABin p; 
+    while(l)
+    {
+        p = malloc(sizeof(struct nodo));
+        p->valor = l->valor;
+        p->esq = NULL;
+        p->dir = NULL;
+        aux(p,a);
+        l=l->prox;
+    }
+}
+/*
+int aux (int valor, int bool, ABin a) {
+    return a==NULL || (a && (bool) ? a->valor < valor && aux(valor,bool,a->esq) && aux(valor,bool,a->dir) : a->valor > valor && aux(valor,bool,a->esq) && aux(valor,bool,a->dir));
+}
+*/
+
+int deProcura (ABin a) { 
+    return a == NULL || (a && aux(a->valor,1,a->esq) && aux(a->valor,0,a->dir) && deProcura(a->esq) && deProcura(a->dir));
+}
