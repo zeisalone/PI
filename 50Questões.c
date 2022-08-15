@@ -421,6 +421,24 @@ void insere (int s[], int N, int x){
     } 
 }
 
+//27
+
+void merge (int r [], int a[], int b[], int na, int nb){
+    int i=0,j=0, w=0;
+
+    while(i<na && j<nb){
+        if(a[i] < b[j])
+            r[w++] = a[i++];
+        else
+            r[w++] = b[j++];
+    }
+    while(i<na)
+      r[w++] = a[i++];
+    while(j<nb)
+      r[w++] = b[j++];
+
+}
+
 //28
 
 int crescente (int a[], int i, int j){
